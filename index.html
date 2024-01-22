@@ -237,7 +237,7 @@ function hasNeighbours(x,y,player)
 <link rel="manifest" href="/KiviCntr/manifest.json">
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body onclick="clicked()" onload="onInit()">
+<body onclick="clicked(event)" onload="onInit()">
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {

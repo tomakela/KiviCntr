@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--<meta name="viewport" content="width=device-width, initial-scale=, maximum-scale=1.0, user-scalable=01">-->
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+<style>
+body {
+  background-color: lightblue;
+}
+
+.board {
+ font-size: 0; 
+    background: black;
+    text-align: center;
+  border-style: solid;
+  border-color: black;
+  border: 0.5vmin solid black;
+}
+
+.square {
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+overflow: hidden;
+	 
+	font-size: 3vmin; 
+	height: 13vmin;
+	width: 13vmin;
+	min-width: 12vmin;
+	text-align: center;
+	vertical-align: middle;
+	color: #FFF;
+	display:table-cell;
+  
+	background-color: #000;
+  
+  font-family: Arial;
+  font-weight: bold;
+  
+  border-style: solid;
+  border-color: black;
+  border: 0.5vmin solid black;
+  box-shadow:0px 0px 0px 0px black inset;
+
+}
+
+.pink {
+  background-color: #FF69B4;
+}
+
+.black {
+  background-color: #5F5F5F;
+}
+
+.white {
+  background-color: #FBFBFB;
+  color: #000;
+}
+
+.marker {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+	font-size: 3vmin; 
+	height: 13vmin;
+	width: 23.5vmin;
+  //border-radius: 50%;
+    border-style: solid;
+  border: 0.5vmin solid #111;
+  text-align: center;
+  vertical-align: middle;
+  display:table-cell;
+  
+  background-color: #000;
+  
+  font-family: Arial;
+  font-weight: bold;
+  border-radius: 10%;
+  color: #000;
+  
+}
+
+#player1 {
+color: #FFF;
+  }
+
+#player2 {
+color: #FFF;
+  }
+
+#player3 {
+}
+
+#player4 {
+
+}
+
+</style>
+<script>
+
+function onInit()
+{
+  document.getElementById("player1").style["border"]="0.5vmin solid white";
+  
+  document.getElementById("player1").style["background-color"] = "#148C14"
+  document.getElementById("player2").style["background-color"] = "blue"
+  document.getElementById("player3").style["background-color"] = "lightblue"
+  document.getElementById("player4").style["background-color"] = "#FF7"
+}
+
+function clicked(e)
+{
+	if (e.target.id.includes("player"))
+	{
+		document.getElementById("player1").style["border"]="0.5vmin solid black"
+		document.getElementById("player2").style["border"]="0.5vmin solid black"
+		document.getElementById("player3").style["border"]="0.5vmin solid black"
+		document.getElementById("player4").style["border"]="0.5vmin solid black"
+
+		e.target.style["border"]="0.5vmin solid white"
+	}
+	else if (e.target.id.includes("sq")) {
+		if (e.target.style["border-radius"] == "50%")
+		{
+			e.target.style["border-radius"]="0%";
+			e.target.style["border"]="0.5vmin solid black"
+			//e.target.style["border"]="0vmin solid black"
+			e.target.style["box-shadow"] = "0px 0px 0px 0px black inset";
+		}
+		else
+		{
+			selected = getSelectedPlayer()
+			e.target.style["border"]="0.5vmin solid"
+			//e.target.style["border"]="0vmin solid black"
+			e.target.style["border-color"] = selected.style["background-color"]
+			e.target.style["box-shadow"] = "0px 0px 0px 1.5vmin " + selected.style["background-color"] + " inset";
+			e.target.style["border-radius"]="50%"
+		}
+		updateScores()
+	}
+}
+
+function getSelectedPlayer()
+{
+		if (document.getElementById("player1").style["border"] == "0.5vmin solid white")
+			return document.getElementById("player1")
+		if (document.getElementById("player2").style["border"] == "0.5vmin solid white")
+			return document.getElementById("player2")
+		if (document.getElementById("player3").style["border"] == "0.5vmin solid white")
+			return document.getElementById("player3")
+		if (document.getElementById("player4").style["border"] == "0.5vmin solid white")
+			return document.getElementById("player4")
+}
+
+function updateScores()
+{
+	for(p = 1; p <= 4; p++)
+	{
+		player = document.getElementById("player" + p)
+		cnt = 0;
+		pts = 0;
+		for(var d = 1; d <= 2; d++)
+		{
+			for(var i=1; i <= 7; i++)
+			{
+				arr = []
+				for(var j=1; j <= 7; j++)
+				{
+					if(d == 1)
+						square = document.getElementById("sq"+i+j)
+					else
+						square = document.getElementById("sq"+j+i)
+					
+					if (square.className.includes("pink")) value = 3
+					if (square.className.includes("black")) value = 2
+					if (square.className.includes("white")) value = 1
+					
+					rock = square.style["border-color"] == player.style["background-color"]
+					if(rock)
+					{
+						arr.push(value)
+						if(d == 1) cnt += 1 // only count once
+					}
+					
+					if((!rock || j == 7))
+					{
+						if(arr.length > 1)
+							pts += arr.length * arr.reduce(getSum)
+						arr = []
+					}
+					
+					if(rock && d == 1)
+					{
+						if (!hasNeighbours(i,j,player))
+						{
+							pts += value
+							arr = []
+						}
+					}
+				}	
+			}
+		}
+		if(cnt > 10)
+			player.innerHTML = "<font color=\"red\">" + cnt + "/10</font><br>"+pts+" pts"
+		else
+			player.innerHTML = cnt + "/10<br>"+pts+" pts"
+	}
+}
+
+function getSum(total, num) {
+  return total + num;
+}
+
+function hasNeighbours(x,y,player)
+{
+	col = player.style["background-color"]
+	if(x > 1)
+		if(document.getElementById("sq"+(x-1)+(y)).style["border-color"] == col) return true
+	if(y > 1)
+		if(document.getElementById("sq"+(x)+(y-1)).style["border-color"] == col) return true
+	if(x < 7)
+		if(document.getElementById("sq"+(x+1)+(y)).style["border-color"] == col) return true
+	if(y < 7)
+		if(document.getElementById("sq"+(x)+(y+1)).style["border-color"] == col) return true
+	return false
+}
+
+</script>
+</head>
+<body onclick="clicked(event)" onload="onInit()">
+<div class="board">
+<div class="square white" id="sq11">AA<br>BB</div>
+<div class="square black" id="sq12">ABCDE</div>
+<div class="square black" id="sq13">&le;12</div>
+<div class="square white" id="sq14">AAA</div>
+<div class="square black" id="sq15">1,3,5</div>
+<div class="square black" id="sq16">2,4,6</div>
+<div class="square white" id="sq17">AAA</div>
+<br>
+<div class="square black" id="sq21" id="sq">2,4,6</div>
+<div class="square pink"  id="sq22">AAAA<br>BB</div>
+<div class="square white" id="sq23">AAA</div>
+<div class="square pink"  id="sq24">AA<br>BB<br>CC</div>
+<div class="square white" id="sq25">ABCD</div>
+<div class="square pink"  id="sq26">AAA<br>BBB</div>
+<div class="square black" id="sq27">&ge;30</div>
+<br>
+<div class="square white" id="sq31">ABCD</div>
+<div class="square black" id="sq32">AAAA</div>
+<div class="square black" id="sq33">&ge;30</div>
+<div class="square black" id="sq34">ABCDE</div>
+<div class="square pink"  id="sq35">AAAA<br>BB</div>
+<div class="square black" id="sq36">1,3,5</div>
+<div class="square white" id="sq37">AAA<br>BB</div>
+<br>
+<div class="square black" id="sq41">&le;12</div>
+<div class="square white" id="sq42">AAA<br>BB</div>
+<div class="square black" id="sq43">2,4,6</div>
+<div class="square pink"  id="sq44">AAA<br>BBB</div>
+<div class="square black" id="sq45">&le;12</div>
+<div class="square white" id="sq46">AA<br>BB</div>
+<div class="square black" id="sq47">ABCDE</div>
+<br>
+<div class="square white" id="sq51">AAA</div>
+<div class="square black" id="sq52">ABCDE</div>
+<div class="square pink"  id="sq53">AA<br>BB<br>CC</div>
+<div class="square black" id="sq54">1,3,5</div>
+<div class="square black" id="sq55">AAAA</div>
+<div class="square black" id="sq56">&ge;30</div>
+<div class="square white" id="sq57">AA<br>BB</div>
+<br>
+<div class="square black" id="sq61">1,3,5</div>
+<div class="square pink"  id="sq62">AAA<br>BBB</div>
+<div class="square white" id="sq63">ABCD</div>
+<div class="square pink"  id="sq64">AAAA<br>BB</div>
+<div class="square white" id="sq65">AAA<br>BB</div>
+<div class="square pink"  id="sq66">AA<br>BB<br>CC</div>
+<div class="square black" id="sq67">&le;12</div>
+<br>
+<div class="square white" id="sq71">ABCD</div>
+<div class="square black" id="sq72">&ge;30</div>
+<div class="square black" id="sq73">AAAA</div>
+<div class="square white" id="sq74">AA<br>BB</div>
+<div class="square black" id="sq75">1,3,5</div>
+<div class="square black" id="sq76">AAAA</div>
+<div class="square white" id="sq77">AAA<br>BB</div>
+<br>
+<div class="marker" id="player1">0/10<br>0 pts</div>
+<div class="marker" id="player2">0/10<br>0 pts</div>
+<div class="marker" id="player3">0/10<br>0 pts</div>
+<div class="marker" id="player4">0/10<br>0 pts</div>
+
+</div>
+</body>
+</html>

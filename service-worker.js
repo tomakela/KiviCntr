@@ -1,3 +1,7 @@
+// Choose a different app prefix name
+var APP_PREFIX = 'kvcntr_';
+var VERSION = 'version_01';
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('v1').then((cache) => {

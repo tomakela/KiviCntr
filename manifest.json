@@ -1,6 +1,6 @@
 {
   "name": "KiviCntr",
-  "short_name": "Counter",
+  "short_name": "KiviCntr",
   "icons": [
     {
       "src": "icon.svg",

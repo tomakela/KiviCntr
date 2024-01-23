@@ -7,3 +7,7 @@ My old manual score counter for a board game Kivi: https://boardgamegeek.com/boa
 Icon/favicon from https://fonts.google.com/icons released under Apache License Version 2.0
 
 ![Screenshot](screenshot.png)
+
+## Note:
+
+Assumes portrait screen. On PC: install PWA and make the window less wide than high.
